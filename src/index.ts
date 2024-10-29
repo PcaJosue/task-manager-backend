@@ -12,20 +12,11 @@ const allowedOrigins = [
   'https://task-manager-e05c7.firebaseapp.com'
 ];
 
-const corsOptions: CorsOptionsDelegate<any> = (origin, callback) => {
-  console.log('origin', origin);
-  if (!origin || allowedOrigins.includes(origin)) {
-    callback(null, {
-      origin: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      credentials: true,
-    });
-  } else {
-    callback(new Error('Not allowed by CORS'));
-  }
+const options: cors.CorsOptions = {
+  origin: allowedOrigins
 };
 
-app.use(cors(corsOptions));
+app.use(cors(options));
 app.use('/api', routes);
 
 if (require.main === module) {
