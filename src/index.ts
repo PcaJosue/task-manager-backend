@@ -6,13 +6,26 @@ import routes from './routes';
 const app = express();
 app.use(express.json());
 
-app.use(cors({
-  origin: 'https://task-manager-e05c7.web.app/', 
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-}));
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://task-manager-e05c7.web.app',
+  'https://task-manager-e05c7.firebaseapp.com'
+];
 
+const corsOptions: CorsOptionsDelegate<any> = (origin, callback) => {
+  console.log('origin', origin);
+  if (!origin || allowedOrigins.includes(origin)) {
+    callback(null, {
+      origin: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      credentials: true,
+    });
+  } else {
+    callback(new Error('Not allowed by CORS'));
+  }
+};
+
+app.use(cors(corsOptions));
 app.use('/api', routes);
 
 if (require.main === module) {
