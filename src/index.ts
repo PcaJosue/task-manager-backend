@@ -6,10 +6,16 @@ import routes from './routes';
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = ['http://localhost:4200', 'https://task-manager-e05c7.web.app'];
+const allowedOrigins = ['http://localhost:4200', 'https://task-manager-e05c7.web.app', 'https://your-app.onrender.com'];
+
 const corsOptions: CorsOptionsDelegate<any> = (origin, callback) => {
+  console.log('origin',origin);
   if (!origin || allowedOrigins.includes(origin)) {
-    callback(null);
+    callback(null, {
+      origin: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      credentials: true,
+    });
   } else {
     callback(new Error('Not allowed by CORS'));
   }
