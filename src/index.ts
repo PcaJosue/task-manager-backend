@@ -1,15 +1,21 @@
 import 'dotenv/config';
 import express from 'express';
-import cors from 'cors';
+import cors, { CorsOptionsDelegate } from 'cors';
 import routes from './routes';
 
 const app = express();
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:4200',
-  methods: 'GET,POST,PUT,DELETE',
-  credentials: true,
-}));
+
+const allowedOrigins = ['http://localhost:4200', 'https://task-manager-e05c7.web.app'];
+const corsOptions: CorsOptionsDelegate<any> = (origin, callback) => {
+  if (!origin || allowedOrigins.includes(origin)) {
+    callback(null);
+  } else {
+    callback(new Error('Not allowed by CORS'));
+  }
+};
+
+app.use(cors(corsOptions));
 app.use('/api', routes);
 
 if (require.main === module) {
